@@ -47,7 +47,7 @@ NextState1=0
 Break=0
 State Storage=0
 [DebugChecksum]
-Checksum=745000489
+Checksum=-726134558
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -71,11 +71,12 @@ Graph=0
 Symbiont=0
 Exclusions=
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\main.c}.109.3" 0 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\main.c}.76.27" 0 0 0 0 "" 0 ""
-Bp2=_ "STD_CODE" "{$PROJ_DIR$\blink-efwd-01.c}.201.35" 0 0 0 0 "" 0 ""
-Bp3=_ "STD_CODE" "{$PROJ_DIR$\blink-efwd-01.c}.137.5" 0 0 0 0 "" 0 ""
-Count=4
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\main.c}.109.4" 0 0 0 0 "" 0 ""
+Bp1=_ "STD_CODE" "{$PROJ_DIR$\blink-efwd-01.c}.201.35" 0 0 0 0 "" 0 ""
+Bp2=_ "STD_CODE" "{$PROJ_DIR$\blink-efwd-01.c}.137.5" 0 0 0 0 "" 0 ""
+Bp3=_ "STD_CODE" "{$PROJ_DIR$\main.c}.76.12" 0 0 0 0 "" 0 ""
+Bp4=_ "STD_CODE" "{$PROJ_DIR$\main.c}.79.4" 0 0 0 0 "" 0 ""
+Count=5
 [FET]
 Clock mode=38
 Extended Clock mode=-1

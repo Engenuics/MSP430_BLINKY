@@ -228,7 +228,7 @@ __program_start:
     RSEG    CODE:CODE:NOROOT(1)
 
 __low_level_init:	
-; For maximum power savings, the device runs off the built in low power 12kHz oscillator, VLOCLK.
+; For maximum power savings, the device runs off the built-in low power 12kHz oscillator, VLOCLK.
 ; If serial communication is required, the clock is switched to the DCO that should
 ; provide adequate timing for 9600 baud serial.
 ; When everything is up and running:
