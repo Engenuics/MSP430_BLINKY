@@ -73,7 +73,7 @@ __interrupt void Port1ISR(void)
 {
   /* Debounce the button press for 1000 ms -- not a great idea in an ISR but ok for a hack */
   /* 12000 / 12,000 = 1000 ms */
-  for(u16 i = 0; i < 1200; i++);
+  for(u16 i = 0; i < 800; i++);
   
   /* If button is still down, consider it a valid press */
   if( !(P1IN & P1_0_BUTTON) )

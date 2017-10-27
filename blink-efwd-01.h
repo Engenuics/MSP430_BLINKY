@@ -28,7 +28,7 @@ Constants
 #define TIME_MAX            (u16)65535 /* Taccro for max second period */
 
 #define TOTAL_LEDS          (u8)8
-#define TOTAL_PATTERNS      (u8)4
+#define TOTAL_PATTERNS      (u8)3
 
 
 /****************************************************************************************
@@ -97,12 +97,14 @@ void BlinkSM_Initialize();
 void TestBlink();
 void SetTimer(u16 u16Taccr0_);
 void ClockwiseSetup();
+void Alternate4Setup();
 
 
 /****************************************************************************************
 State Machine Functions
 ****************************************************************************************/
 void BlinkSM_Clockwise();                /* Clockwise sequential blinking of LEDs (100ms each), 3 second pause */
+void BlinkSM_Alternate4();               /* Alternate odd and even blinking */
 void BlinkSM_Pulse();                    /* All leds blink 100ms every 5 seconds */
 void BlinkSM_On();                       /* All leds on */
 void BlinkSM_Off();                      /* All leds blink 100ms every 5 seconds */

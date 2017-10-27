@@ -23,7 +23,7 @@ YYYY-MM-DD  Comments
 /* Global variable definitions intended for scope across multiple files */
 fnCode_type BlinkStateMachine = BlinkSM_Initialize;   /* The application state machine */
 fnCode_type G_fCurrentStateMachine = BlinkSM_Off;  
-fnCode_type G_pfPatterns[] = {BlinkSM_Off, ClockwiseSetup, BlinkSM_Pulse, BlinkSM_On};
+fnCode_type G_pfPatterns[] = {BlinkSM_Off, Alternate4Setup, BlinkSM_Pulse};
 volatile u8 G_u8ActivePattern = 0;                    /* Active LED pattern */
  
 
@@ -37,11 +37,11 @@ volatile u16 u16GlobalCurrentSleepInterval;           /* Duration that the devic
 
 /******************** Local Globals ************************/
 /* Global variable definitions intended only for the scope of this file */
-u8 LG_u8Leds[]                    = {P1_2_LED1,    P1_1_LED5,    P3_6_LED2,    P3_2_LED6,    P3_1_LED3,    P3_0_LED7,    P2_2_LED4,    P1_3_LED8};
-u16*  LG_pu16LedPorts[TOTAL_LEDS] = {(u16*)0x0021, (u16*)0x0021, (u16*)0x0019, (u16*)0x0019, (u16*)0x0019, (u16*)0x0019, (u16*)0x0029, (u16*)0x0021};
+//u8 LG_u8Leds[]                    = {P1_2_LED1,    P1_1_LED5,    P3_6_LED2,    P3_2_LED6,    P3_1_LED3,    P3_0_LED7,    P2_2_LED4,    P1_3_LED8};
+//u16*  LG_pu16LedPorts[TOTAL_LEDS] = {(u16*)0x0021, (u16*)0x0021, (u16*)0x0019, (u16*)0x0019, (u16*)0x0019, (u16*)0x0019, (u16*)0x0029, (u16*)0x0021};
 
-//u8 LG_u8Leds[]                    = {P1_2_LED1,    P3_6_LED2,    P3_1_LED3,    P2_2_LED4,    P1_1_LED5,    P3_2_LED6,    P3_0_LED7,    P1_3_LED8};
-//u16*  LG_pu16LedPorts[TOTAL_LEDS] = {(u16*)0x0021, (u16*)0x0019, (u16*)0x0019, (u16*)0x0029, (u16*)0x0021, (u16*)0x0019, (u16*)0x0019, (u16*)0x0021};
+u8 LG_u8Leds[]                    = {P1_2_LED1,    P3_6_LED2,    P3_1_LED3,    P2_2_LED4,    P1_1_LED5,    P3_2_LED6,    P3_0_LED7,    P1_3_LED8};
+u16*  LG_pu16LedPorts[TOTAL_LEDS] = {(u16*)0x0021, (u16*)0x0019, (u16*)0x0019, (u16*)0x0029, (u16*)0x0021, (u16*)0x0019, (u16*)0x0019, (u16*)0x0021};
 u8  LG_u8ActiveIndex  = 0;
 
 
@@ -127,6 +127,22 @@ void ClockwiseSetup()
 
 } /* end ClockwiseSetup() */
 
+
+/*----------------------------------------------------------------------------*/
+void Alternate4Setup()
+{
+  P1OUT &= ~(P1_2_LED1 | P1_1_LED5 | P1_3_LED8);
+  P2OUT &= ~(P2_2_LED4);
+  P3OUT &= ~(P3_0_LED7 | P3_1_LED3 | P3_2_LED6 | P3_6_LED2);
+  
+  LG_u8ActiveIndex = 0;
+  u16GlobalCurrentSleepInterval = TIME_125MS;
+  G_fCurrentStateMachine = BlinkSM_Alternate4;
+  BlinkStateMachine = BlinkSM_Alternate4; 
+
+} /* end Alternate4Setup() */
+
+
   
 /*----------------------------------------------------------------------------*/
 void BlinkSM_Clockwise()
@@ -154,6 +170,39 @@ void BlinkSM_Clockwise()
   
   BlinkStateMachine = BlinkSM_Sleep;
 
+    
+} /* end BlinkSM_Clockwise() */
+
+
+/*----------------------------------------------------------------------------*/
+void BlinkSM_Alternate4()
+{
+  if(LG_u8ActiveIndex == 0)
+  {
+    /* Even LEDs */ 
+    P1OUT |= P1_3_LED8;
+    P2OUT |= P2_2_LED4;
+    P3OUT |= (P3_2_LED6 | P3_6_LED2);
+
+    P1OUT &= ~(P1_2_LED1 | P1_1_LED5);
+    P3OUT &= ~(P3_0_LED7 | P3_1_LED3);
+    
+    LG_u8ActiveIndex = 1;
+  }
+  else
+  {
+    /* Odd LEDs on */ 
+    P1OUT |= (P1_2_LED1 | P1_1_LED5);
+    P3OUT |= (P3_0_LED7 | P3_1_LED3);
+
+    /* Even LEDs off */
+    P1OUT &= ~P1_3_LED8;
+    P2OUT &= ~P2_2_LED4;
+    P3OUT &= ~(P3_2_LED6 | P3_6_LED2);
+    LG_u8ActiveIndex = 0;
+  }
+  
+  BlinkStateMachine = BlinkSM_Sleep;
     
 } /* end BlinkSM_Clockwise() */
 
@@ -203,7 +252,7 @@ void BlinkSM_Pulse()
       *LG_pu16LedPorts[i] &= ~LG_u8Leds[i];
     }
     bCurrentlyOn = FALSE;
-    u16GlobalCurrentSleepInterval = TIME_3S;
+    u16GlobalCurrentSleepInterval = TIME_500MS;
   }
   /* LEDS are off, so turn them on and sleep short */
   else
