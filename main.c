@@ -54,13 +54,42 @@ extern fnCode_type LG_fPatterns[];                    /* From blink-efwd-01.c */
 
 int main(void)
 {
+  u8 u8Leds[]                    = {P1_2_LED1,    P1_1_LED5,    P3_6_LED2,    P3_2_LED6,    P3_1_LED3,    P3_0_LED7,    P2_2_LED4,    P1_3_LED8};
+  u16*  pu16LedPorts[TOTAL_LEDS] = {(u16*)0x0021, (u16*)0x0021, (u16*)0x0019, (u16*)0x0019, (u16*)0x0019, (u16*)0x0019, (u16*)0x0029, (u16*)0x0021};
 
   /* Enter the state machine where the program will remain unless power cycled */
   __bis_SR_register(GIE);
 
+#if 0
+  /* Allow a button interrupt and timer to wake up sleep */
+  P1IFG &= ~P1_0_BUTTON;
+  P1IE |= P1_0_BUTTON;				
+  TACTL = TIMERA_INT_ENABLE;
+  SetTimer(TIME_125MS);
+#endif
+  
   while(1)
   {
-	  BlinkStateMachine();
+	  //BlinkStateMachine();
+    /* If button is down, LEDs are ON */
+    if( !(P1IN & P1_0_BUTTON) )
+    {
+      for(u8 i = 0; i < TOTAL_LEDS; i++)
+      {
+        *pu16LedPorts[i] |= u8Leds[i];
+      }
+    }
+    else
+    {
+      for(u8 i = 0; i < TOTAL_LEDS; i++)
+      {
+        *pu16LedPorts[i] &= ~u8Leds[i];
+      }
+
+     /* Enter low power mode */
+     //__bis_SR_register(CPUOFF);
+
+    }
   } 
   
 } /* end main */
@@ -71,22 +100,8 @@ int main(void)
 __interrupt void Port1ISR(void)
 /* Handles waking up from low power mode via a button press and returns with processor awake */
 {
-  /* Debounce the button press for 1000 ms -- not a great idea in an ISR but ok for a hack */
-  /* 12000 / 12,000 = 1000 ms */
-  for(u16 i = 0; i < 1200; i++);
-  
-  /* If button is still down, consider it a valid press */
-  if( !(P1IN & P1_0_BUTTON) )
-  {
-    /* Advance to the next pattern */
-    G_u8ActivePattern++;
-    if(G_u8ActivePattern == TOTAL_PATTERNS)
-    {
-      G_u8ActivePattern = 0;
-    }
 
-    G_fCurrentStateMachine = G_pfPatterns[G_u8ActivePattern];
-  }
+    //G_fCurrentStateMachine = G_pfPatterns[G_u8ActivePattern];
  
   /* Clear the flag, but keep the interrupt active */
   P1IFG &= ~P1_0_BUTTON;
@@ -95,6 +110,8 @@ __interrupt void Port1ISR(void)
   //u8GlobalSleepCounter = 1;
   //TACTL = TIMERA_INT_DISABLE;
   asm("BIC #0x0010,4(SP)"); 
+
+
 } /* end Port1ISR */
 
 
@@ -105,7 +122,7 @@ __interrupt void TimerAISR(void)
 /* Handles waking up from low power mode via TimerA expiration and returns with processor awake */
   
   //u8GlobalCurrentSleepInterval = SLEEP_TIME;
-  TACTL = TIMERA_INT_DISABLE;
+  //TACTL = TIMERA_INT_DISABLE;
   asm("BIC #0x0010,0(SP)");
 } // end timer_wakeup_isr
 
