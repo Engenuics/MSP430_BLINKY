@@ -259,10 +259,10 @@ clock_setup
 
 gpio_setup
 ; Setup I/O per the following:
-;  - P1.0 input BUTTON
-;  - P1.1 output LED5 (active high)
-;  - P1.2 output LED1 (active high)
-;  - P1.3 output LED8 (active high)
+;  - P1.0 NC (input)
+;  - P1.1 NC (input)
+;  - P1.2 NC (input)
+;  - P1.3 NC (input)
 ;  - P1.4 JTAG TCK no configuration
 ;  - P1.5 JTAG TMS no configuration
 ;  - P1.6 JTAG TDI no configuration
@@ -270,34 +270,34 @@ gpio_setup
 
 ;  - P2.0 TP1 / output ACLK
 ;  - P2.1 TP2 / output SMCLK
-;  - P2.2 output LED4 (active high)
-;  - P2.3 TP7 output low
-;  - P2.4 TP8 output low
-;  - P2.5 output system tick
-;  - P2.6 TP4 output low
-;  - P2.7 TP3 output low
+;  - P2.2 output P2_2_LED1RED (active high)
+;  - P2.3 output P2_3_LED2RED (active high)
+;  - P2.4 output P2_4_TICK (active high)
+;  - P2.5 NC (input)
+;  - P2.6 NC (input)
+;  - P2.7 NC (input)
 
-;  - P3.0 output LED7 (active high)
-;  - P3.1 output LED3 (active high)
-;  - P3.2 output LED6 (active high)
-;  - P3.3 TP5 output low
+;  - P3.0 output P3_0_LED1GRN (active high)
+;  - P3.1 output P3_1_LED1BLU (active high)
+;  - P3.2 NC (input)
+;  - P3.3 P3_3_BUTTON (input)
 ;  - P3.4 UART POMI
 ;  - P3.5 UART PIMO
-;  - P3.6 output LED2 (active high)
-;  - P3.7 TP6 output low
+;  - P3.6 output P3_6_LED2BLU (active high)
+;  - P3.7 output P3_7_LED2GRN (active high)
 
 ; Set up GPIO.  For data direction, 0 = input, 1 = output.
 	MOV.B	#00000000b, &P1SEL_		  ; All pins GPIO
-	MOV.B	#00001110b, &P1DIR_		  ; LEDs are outputs
-	MOV.B	#00000000b, &P1OUT_ 	  ; Start with all lights off
+	MOV.B	#00000000b, &P1DIR_		  ; NC are inputs
+;	MOV.B	#00000000b, &P1OUT_ 	  ; Start with all lights off
   
 	MOV.B	#00000011b, &P2SEL_		  ; Clock outs on 0 and 1, all else GPIO
-	MOV.B	#11111111b, &P2DIR_		  ; All pins output
-  MOV.B	#00000000b, &P2OUT_ 	  ; Start with all lights off
+	MOV.B	#00011111b, &P2DIR_		  ; LEDs and Tick outputs
+  MOV.B	#00000000b, &P2OUT_ 	  ; Start with all outputs off
   
 	MOV.B	#00110000b, &P3SEL_		  ; Pins 4 and 5 are UART (USCIA)
-	MOV.B	#01000111b, &P3DIR_		  ; 
-	MOV.B	#00000000b, &P3OUT_ 	  ; 
+	MOV.B	#11100011b, &P3DIR_		  ; LEDs output, button input
+	MOV.B	#00000000b, &P3OUT_ 	  ; Start with all outputs off
 
 
 ; Setup timerA
@@ -341,7 +341,7 @@ uart_setup
 interrupt_setup
   BIC.B #ACCVIFG + OFIFG, &IFG1_      ; Clear NMI flags of interest
 ;  BIS.B #ACCVIE + OFIE, &IE1_         ; Enable oscillator fault and memory access interrupts
-  MOV.B	#00000001b, &P1IES_		        ; Set P1.0 (button) interrupts on high-to-low transition
+;  MOV.B	#00001000b, &P3IES_		        ; Set P1.0 (button) interrupts on high-to-low transition
 ;	MOV.B	#00000100b, &P2IES_		        ; Set P2.2 (motion) interrupts on high-to-low transition
   
 low_level_init_end

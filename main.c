@@ -27,22 +27,22 @@ YYYY-MM-DD  Checksum  Comments
 #include "typedef_MSP430.h"
 #include "intrinsics.h"
 #include "main.h"
-#include "blink-efwd-01.h"
+#include "blnkyeie-pcb-01.h"
 
 
 /************************ External Program Globals ****************************/
 /* Globally available variables from other files as indicated */
-extern fnCode_type BlinkStateMachine;                 /* From blink-efwd-01.c */
-extern fnCode_type G_fCurrentStateMachine;            /* From blink-efwd-01.c */
-extern fnCode_type G_pfPatterns[];                    /* From blink-efwd-01.c */
+extern fnCode_type BlinkStateMachine;                 /* From blnkyeie-pcb-01.c */
+extern fnCode_type G_fCurrentStateMachine;            /* From blnkyeie-pcb-01.c */
+extern fnCode_type G_pfPatterns[];                    /* From blnkyeie-pcb-01.c */
  
 
-extern volatile u16 u16GlobalRuntimeFlags;            /* From blink-efwd-01.c */
-extern volatile u16 u16GlobalErrorFlags;              /* From blink-efwd-01.c */
+extern volatile u16 u16GlobalRuntimeFlags;            /* From blnkyeie-pcb-01.c */
+extern volatile u16 u16GlobalErrorFlags;              /* From blnkyeie-pcb-01.c */
 
-extern volatile u8 u8GlobalCurrentSleepInterval;      /* From blink-efwd-01.c */
-extern volatile u8 G_u8ActivePattern;                 /* From blink-efwd-01.c */
-extern fnCode_type LG_fPatterns[];                    /* From blink-efwd-01.c */
+extern volatile u8 u8GlobalCurrentSleepInterval;      /* From blnkyeie-pcb-01.c */
+extern volatile u8 G_u8ActivePattern;                 /* From blnkyeie-pcb-01.c */
+extern fnCode_type LG_fPatterns[];                    /* From blnkyeie-pcb-01.c */
 
 
 /************************ Program Globals ****************************/
@@ -65,10 +65,10 @@ int main(void)
   
 } /* end main */
 
-
+#if 0
 /************************ Interrupt Service Routines ****************************/
-#pragma vector = PORT1_VECTOR
-__interrupt void Port1ISR(void)
+#pragma vector = PORT3_VECTOR
+__interrupt void Port3ISR(void)
 /* Handles waking up from low power mode via a button press and returns with processor awake */
 {
   /* Debounce the button press for 10 ms -- not a great idea in an ISR but ok for a hack */
@@ -76,7 +76,7 @@ __interrupt void Port1ISR(void)
   for(u16 i = 0; i < 120; i++);
   
   /* If button is still down, consider it a valid press */
-  if( !(P1IN & P1_0_BUTTON) )
+  if( !(P3IN & P3_3_BUTTON) )
   {
     /* Advance to the next pattern */
     G_u8ActivePattern++;
@@ -89,14 +89,14 @@ __interrupt void Port1ISR(void)
   }
  
   /* Clear the flag, but keep the interrupt active */
-  P1IFG &= ~P1_0_BUTTON;
+  P3IFG &= ~P3_3_BUTTON;
   
   //u8GlobalCurrentSleepInterval = SLEEP_TIME;
   //u8GlobalSleepCounter = 1;
   //TACTL = TIMERA_INT_DISABLE;
   asm("BIC #0x0010,4(SP)"); 
 } /* end Port1ISR */
-
+#endif
 
 /*----------------------------------------------------------------------------*/
 #pragma vector = TIMER0_A1_VECTOR

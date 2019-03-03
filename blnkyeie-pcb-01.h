@@ -27,7 +27,7 @@ Constants
 #define TIME_7S             (u16)20832 /* Taccro for 7 second period */
 #define TIME_MAX            (u16)65535 /* Taccro for max second period */
 
-#define TOTAL_LEDS          (u8)8
+#define TOTAL_LEDS          (u8)6
 #define TOTAL_PATTERNS      (u8)4
 
 
@@ -35,35 +35,35 @@ Constants
 Hardware Definitions
 ****************************************************************************************/
 /* Port 1 pins */
-#define P1_0_BUTTON              0x01
-#define P1_1_LED5                0x02
-#define P1_2_LED1                0x04
-#define P1_3_LED8                0x08
-#define P1_4_                    0x10
-#define P1_5_                    0x20
-#define P1_6_                    0x40
-#define P1_7_                    0x80
+#define P1_0_                0x01
+#define P1_1_                0x02
+#define P1_2_                0x04
+#define P1_3_                0x08
+#define P1_4_                0x10
+#define P1_5_                0x20
+#define P1_6_                0x40
+#define P1_7_                0x80
 
 /* Port 2 pins */
-#define P2_0_ACLK                0x01
-#define P2_1_SMCLK               0x02
-#define P2_2_LED4                0x04
-#define P2_3_TP7                 0x08
-#define P2_4_TP8                 0x10
-#define P2_5_TICK                0x20
-#define P2_6_TP4                 0x40
-#define P2_7_TP3                 0x80
+#define P2_0_ACLK            0x01
+#define P2_1_SMCLK           0x02
+#define P2_2_LED1RED         0x04
+#define P2_3_LED2RED         0x08
+#define P2_4_TICK            0x10
+#define P2_5_                0x20
+#define P2_6_                0x40
+#define P2_7_                0x80
 
 
 /* Port 3 pins */
-#define P3_0_LED7                0x01
-#define P3_1_LED3                0x02
-#define P3_2_LED6                0x04
-#define P3_3_TP5                 0x08
-#define P3_4_                    0x10
-#define P3_5_                    0x20
-#define P3_6_LED2                0x40
-#define P3_7_TP6                 0x80
+#define P3_0_LED1GRN         0x01
+#define P3_1_LED1BLU         0x02
+#define P3_2_                0x04
+#define P3_3_BUTTON          0x08
+#define P3_4_U0POMI          0x10
+#define P3_5_U0PIMO          0x20
+#define P3_6_LED2BLU         0x40
+#define P3_7_LED2GRN         0x80
 
 /* Setup constants */
 #define TIMERA_INT_ENABLE  0x0196

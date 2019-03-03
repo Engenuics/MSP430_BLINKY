@@ -12,7 +12,7 @@ YYYY-MM-DD  Comments
 #include "io430.h"
 #include "typedef_MSP430.h"
 #include "intrinsics.h"
-#include "blink-efwd-01.h"
+#include "blnkyeie-pcb-01.h"
 #include "main.h"
 
 /******************** External Globals ************************/
@@ -22,9 +22,9 @@ YYYY-MM-DD  Comments
 /******************** Program Globals ************************/
 /* Global variable definitions intended for scope across multiple files */
 fnCode_type BlinkStateMachine = BlinkSM_Initialize;   /* The application state machine */
-fnCode_type G_fCurrentStateMachine = BlinkSM_Off;  
+fnCode_type G_fCurrentStateMachine = ClockwiseSetup;  
 fnCode_type G_pfPatterns[] = {BlinkSM_Off, ClockwiseSetup, BlinkSM_Pulse, BlinkSM_On};
-volatile u8 G_u8ActivePattern = 0;                    /* Active LED pattern */
+volatile u8 G_u8ActivePattern = 1;                    /* Active LED pattern */
  
 
 volatile u16 u16GlobalRuntimeFlags = 0;               /* Flag register for communicating various runtime events. */
@@ -37,11 +37,9 @@ volatile u16 u16GlobalCurrentSleepInterval;           /* Duration that the devic
 
 /******************** Local Globals ************************/
 /* Global variable definitions intended only for the scope of this file */
-u8 LG_u8Leds[]                    = {P1_2_LED1,    P1_1_LED5,    P3_6_LED2,    P3_2_LED6,    P3_1_LED3,    P3_0_LED7,    P2_2_LED4,    P1_3_LED8};
-u16*  LG_pu16LedPorts[TOTAL_LEDS] = {(u16*)0x0021, (u16*)0x0021, (u16*)0x0019, (u16*)0x0019, (u16*)0x0019, (u16*)0x0019, (u16*)0x0029, (u16*)0x0021};
+u8 LG_u8Leds[]                    = {P2_2_LED1RED, P3_0_LED1GRN, P3_1_LED1BLU, P2_3_LED2RED, P3_7_LED2GRN, P3_6_LED2BLU};
+u16*  LG_pu16LedPorts[TOTAL_LEDS] = {(u16*)0x0029, (u16*)0x0019, (u16*)0x0019, (u16*)0x0029, (u16*)0x0019, (u16*)0x0019};
 
-//u8 LG_u8Leds[]                    = {P1_2_LED1,    P3_6_LED2,    P3_1_LED3,    P2_2_LED4,    P1_1_LED5,    P3_2_LED6,    P3_0_LED7,    P1_3_LED8};
-//u16*  LG_pu16LedPorts[TOTAL_LEDS] = {(u16*)0x0021, (u16*)0x0019, (u16*)0x0019, (u16*)0x0029, (u16*)0x0021, (u16*)0x0019, (u16*)0x0019, (u16*)0x0021};
 u8  LG_u8ActiveIndex  = 0;
 
 
@@ -65,7 +63,7 @@ void TestBlink()
 	while(1)
   {
 	  for(u16 i = 5000; i != 0; i--); 	/* 6 cycle loop */
-    P2OUT ^= P2_2_LED4; 	/* Takes 5 instruction cycles */	
+    P2OUT ^= P2_2_LED1RED; 	/* Takes 5 instruction cycles */	
 	} 
 } /* end TestBlink */
 
@@ -101,11 +99,11 @@ State Machine Functions
 void BlinkSM_Initialize()
 {
   /* Reset key variables */
-  u16GlobalCurrentSleepInterval = TIME_MAX;
+  u16GlobalCurrentSleepInterval = TIME_125MS;
     
   /* Allow a button interrupt and timer to wake up sleep */
-  P1IFG &= ~P1_0_BUTTON;
-  P1IE |= P1_0_BUTTON;				
+//  P1IFG &= ~P1_0_BUTTON;
+//  P1IE |= P1_0_BUTTON;				
   TACTL = TIMERA_INT_ENABLE;
        
   BlinkStateMachine = BlinkSM_Sleep;
@@ -116,9 +114,8 @@ void BlinkSM_Initialize()
 /*----------------------------------------------------------------------------*/
 void ClockwiseSetup()
 {
-  P1OUT &= ~(P1_2_LED1 | P1_1_LED5 | P1_3_LED8);
-  P2OUT &= ~(P2_2_LED4);
-  P3OUT &= ~(P3_0_LED7 | P3_1_LED3 | P3_2_LED6 | P3_6_LED2);
+  P2OUT &= ~(P2_2_LED1RED | P2_3_LED2RED);
+  P3OUT &= ~(P3_0_LED1GRN | P3_1_LED1BLU | P3_6_LED2BLU | P3_7_LED2GRN);
   
   LG_u8ActiveIndex = 0;
   u16GlobalCurrentSleepInterval = TIME_125MS;
